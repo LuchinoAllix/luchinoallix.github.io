@@ -1,24 +1,883 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 
 <head>
+  <meta charset="utf-8">
+  <title>codeBoot</title>
 
-<meta charset="utf-8">
-<title>codeBoot</title>
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#016bb6">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover"
+  >
 
-<link rel="stylesheet" href="codeboot.bundle.css">
-<script src="codeboot.bundle.js"></script>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#016bb6">
 
+  <link rel="stylesheet" href="codeboot.bundle.css">
+  <script src="codeboot.bundle.js"></script>
+
+  <style>
+    /* =========================================================
+       INFO BUTTON
+       ========================================================= */
+
+    #cb-info-btn {
+      position: fixed;
+      top: 6px;
+      right: 120px;
+      z-index: 9999;
+
+      color: white;
+      background: #cad7ea;
+      border: none;
+      border-radius: 6px;
+
+      padding: 8px 14px;
+      font-size: 14px;
+
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    #cb-info-btn:hover {
+      background-color: #90b7dc;
+    }
+
+    #cb-info-btn:focus-visible {
+      outline: 3px solid #016bb6;
+      outline-offset: 2px;
+    }
+
+
+    /* =========================================================
+       OVERLAY
+       ========================================================= */
+
+    #cb-info-overlay {
+      display: none;
+
+      position: fixed;
+      inset: 0;
+
+      background: rgba(0, 0, 0, 0.5);
+
+      z-index: 10000;
+
+      align-items: center;
+      justify-content: center;
+
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    #cb-info-overlay.open {
+      display: flex;
+    }
+
+
+    /* =========================================================
+       POPUP
+       ========================================================= */
+
+    #cb-info-popup {
+      background: rgb(249, 241, 250);
+
+      border-radius: 10px;
+
+      width: min(94vw, 860px);
+      max-height: 86vh;
+
+      padding: 24px 28px;
+
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+
+      display: flex;
+      flex-direction: column;
+
+      gap: 12px;
+
+      overflow-y: auto;
+      box-sizing: border-box;
+    }
+
+    #cb-info-popup h2 {
+      margin: 0 0 4px;
+
+      font-size: 30px;
+      color: #a00789;
+    }
+
+    #cb-info-popup p {
+      margin: 4px 0;
+      line-height: 1.5;
+    }
+
+    #cb-info-popup ul {
+      margin: 4px 0;
+      padding-left: 22px;
+
+      line-height: 1.5;
+    }
+
+    #cb-info-popup li {
+      margin: 2px 0;
+    }
+
+
+    /* =========================================================
+       DROPDOWN SECTIONS
+       ========================================================= */
+
+    #cb-info-popup details {
+      border-radius: 8px;
+      margin-top: 8px;
+    }
+
+    #cb-info-popup summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      cursor: pointer;
+
+      padding: 12px 14px;
+
+      background: rgba(160, 7, 137, 0.08);
+
+      border-radius: 7px;
+
+      font-size: 23px;
+      font-weight: 600;
+
+      color: #000;
+
+      list-style: none;
+
+      transition:
+        background-color 0.2s ease,
+        color 0.2s ease;
+    }
+
+    /* Remove default browser triangle */
+    #cb-info-popup summary::-webkit-details-marker {
+      display: none;
+    }
+
+    #cb-info-popup summary::after {
+      content: "＋";
+
+      font-size: 22px;
+      font-weight: normal;
+
+      color: #a00789;
+
+      transition: transform 0.2s ease;
+    }
+
+    #cb-info-popup details[open] summary::after {
+      content: "−";
+    }
+
+    #cb-info-popup summary:hover {
+      background: rgba(160, 7, 137, 0.14);
+    }
+
+    #cb-info-popup summary:focus-visible {
+      outline: 3px solid #016bb6;
+      outline-offset: 2px;
+    }
+
+    #cb-info-popup .section-content {
+      padding: 8px 4px 4px;
+    }
+
+
+    /* =========================================================
+       CODE BLOCKS
+       ========================================================= */
+
+    #cb-info-popup .code-container {
+      position: relative;
+
+      margin: 12px 0;
+    }
+
+    #cb-info-popup pre {
+      margin: 0;
+
+      width: 100%;
+      box-sizing: border-box;
+
+      padding: 16px;
+
+      background: #2b2b2b;
+      color: #f1f1f1;
+
+      border-radius: 7px;
+
+      overflow-x: auto;
+
+      font-family:
+        "SFMono-Regular",
+        Consolas,
+        "Liberation Mono",
+        Menlo,
+        monospace;
+
+      font-size: 15px;
+      line-height: 1.6;
+
+      white-space: pre;
+
+      tab-size: 2;
+    }
+
+    #cb-info-popup pre code {
+      color: #f1f1f1;
+
+      font-family: inherit;
+      font-size: inherit;
+      font-weight: 500;
+    }
+
+
+    /* =========================================================
+       COPY BUTTON
+       ========================================================= */
+
+    #cb-info-popup .copy-btn {
+      position: absolute;
+
+      top: 8px;
+      right: 8px;
+
+      padding: 6px 10px;
+
+      background: #555;
+      color: white;
+
+      border: 1px solid #777;
+      border-radius: 5px;
+
+      font-size: 13px;
+
+      cursor: pointer;
+
+      opacity: 0.9;
+
+      transition:
+        background-color 0.2s ease,
+        opacity 0.2s ease;
+    }
+
+    #cb-info-popup .copy-btn:hover {
+      background: #666;
+      opacity: 1;
+    }
+
+    #cb-info-popup .copy-btn:focus-visible {
+      outline: 2px solid #90b7dc;
+      outline-offset: 2px;
+    }
+
+    #cb-info-popup .copy-btn.copied {
+      background: #218838;
+      border-color: #218838;
+    }
+
+
+    /* =========================================================
+       INLINE CODE
+       ========================================================= */
+
+    #cb-info-popup code:not(pre code) {
+      font-family:
+        "SFMono-Regular",
+        Consolas,
+        "Liberation Mono",
+        Menlo,
+        monospace;
+
+      font-size: 14px;
+      font-weight: 500;
+
+      background: rgba(0, 0, 0, 0.06);
+
+      padding: 2px 4px;
+      border-radius: 4px;
+    }
+
+
+    /* =========================================================
+       BLOCKQUOTES
+       ========================================================= */
+
+    #cb-info-popup blockquote {
+      margin: 10px 0;
+
+      padding: 8px 14px;
+
+      border-left: 4px solid #a00789;
+
+      background: rgba(160, 7, 137, 0.06);
+
+      border-radius: 0 4px 4px 0;
+    }
+
+    #cb-info-popup blockquote p {
+      margin: 2px 0;
+    }
+
+
+    /* =========================================================
+       LINKS
+       ========================================================= */
+
+    #cb-info-popup a {
+      color: #016bb6;
+      text-decoration: underline;
+    }
+
+
+    /* =========================================================
+       ACTIONS
+       ========================================================= */
+
+    #cb-info-actions {
+      display: flex;
+      justify-content: flex-end;
+
+      gap: 8px;
+
+      margin-top: 4px;
+    }
+
+    #cb-info-actions button {
+      padding: 6px 14px;
+
+      border-radius: 6px;
+      border: none;
+
+      cursor: pointer;
+
+      font-size: 14px;
+    }
+
+    #cb-info-close {
+      background: #eee;
+    }
+
+    #cb-info-close:hover {
+      background: #ddd;
+    }
+
+
+    /* =========================================================
+       MOBILE
+       ========================================================= */
+
+    @media (max-width: 600px) {
+      #cb-info-btn {
+        right: 70px;
+      }
+
+      #cb-info-overlay {
+        padding: 10px;
+      }
+
+      #cb-info-popup {
+        width: 100%;
+        max-height: 92vh;
+
+        padding: 18px;
+      }
+
+      #cb-info-popup h2 {
+        font-size: 24px;
+      }
+
+      #cb-info-popup summary {
+        font-size: 19px;
+      }
+
+      #cb-info-popup pre {
+        font-size: 13px;
+      }
+    }
+  </style>
 </head>
+
 
 <body>
 
-<div id="cb-body"></div>
+  <!-- =======================================================
+       INFO BUTTON
+       ======================================================= -->
 
-<div class="cb-vm"></div>
+  <button
+    id="cb-info-btn"
+    type="button"
+    aria-label="Afficher les informations"
+    aria-controls="cb-info-overlay"
+  >
+    ℹ️
+  </button>
+
+
+  <!-- =======================================================
+       INFORMATION POPUP
+       ======================================================= -->
+
+  <div id="cb-info-overlay">
+
+    <div
+      id="cb-info-popup"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="cb-info-title"
+    >
+
+      <h2 id="cb-info-title">
+        L'inférence de type, étape par étape.
+      </h2>
+
+      <p>
+        Cet outil est un interpréteur pour une sous-partie du langage
+        Haskell, qui permet de visualiser l'inférence de type étape par étape.
+      </p>
+
+
+      <!-- ===================================================
+           UTILISATION
+           =================================================== -->
+
+      <details open>
+
+        <summary>
+          Utilisation
+        </summary>
+
+        <div class="section-content">
+
+          <p>
+            La <strong>REPL</strong> sert juste à afficher le résultat.
+            Pour utiliser l'interpréteur, il faut créer un nouveau fichier,
+            à l'aide de l'icône dossier, en haut à gauche.
+          </p>
+
+          <p>
+            Les trois boutons en haut à droite servent respectivement à :
+          </p>
+
+          <ul>
+            <li>
+              lancer l'inférence de type étape par étape
+            </li>
+
+            <li>
+              exécuter le code
+              (fait automatiquement à la fin de l'inférence de type)
+            </li>
+
+            <li>
+              arrêter l'inférence ou l'exécution
+            </li>
+          </ul>
+
+          <p>
+            Voici quelques exemples de code qui peuvent être utilisés :
+          </p>
+
+
+          <!-- CODE 1 -->
+
+          <div class="code-container">
+
+            <button
+              class="copy-btn"
+              type="button"
+              aria-label="Copier le code"
+            >
+              Copier
+            </button>
+
+            <pre><code>main = print "Hello World!"</code></pre>
+
+          </div>
+
+
+          <!-- CODE 2 -->
+
+          <div class="code-container">
+
+            <button
+              class="copy-btn"
+              type="button"
+              aria-label="Copier le code"
+            >
+              Copier
+            </button>
+
+            <pre><code>len []    = 0
+len (_:b) = 1 + (len b)
+
+main = print (len [1,2,3])</code></pre>
+
+          </div>
+
+
+          <!-- CODE 3 -->
+
+          <div class="code-container">
+
+            <button
+              class="copy-btn"
+              type="button"
+              aria-label="Copier le code"
+            >
+              Copier
+            </button>
+
+            <pre><code>myMap f [] = []
+myMap f (a:b) = (f a) : (myMap f b)
+
+main = print(myMap (\x -> x * x + 1) [3,4,5])</code></pre>
+
+          </div>
+
+        </div>
+
+      </details>
+
+
+      <!-- ===================================================
+           SPÉCIFICATIONS
+           =================================================== -->
+
+      <details>
+
+        <summary>
+          Spécifications
+        </summary>
+
+        <div class="section-content">
+
+          <p>
+            Seulement une sous-partie de Haskell est couverte par
+            l'interpréteur. De plus, très peu de primitives ont été
+            implémentées.
+          </p>
+
+          <p>
+            Même s'il serait intéressant d'utiliser cet outil à des fins
+            pédagogiques en classe, c'est avant tout
+            <em>a proof of concept</em>.
+          </p>
+
+          <p>
+            Résumé simplement, l'interpréteur accepte des programmes Haskell
+            qui n'utilisent pas :
+          </p>
+
+          <ul>
+            <li>les <code>where</code></li>
+            <li>la notation <code>|</code> (guards)</li>
+            <li>les <em>list comprehensions</em></li>
+            <li>des monades autres que <code>print</code></li>
+            <li>les <em>type classes</em></li>
+          </ul>
+
+          <blockquote>
+            <p>
+              <strong>Caveat</strong>
+            </p>
+
+            <p>
+              Il y a des bugs en tout genre à travers l'interpréteur...
+            </p>
+          </blockquote>
+
+        </div>
+
+      </details>
+
+
+      <!-- ===================================================
+           CONTEXTE
+           =================================================== -->
+
+      <details>
+
+        <summary>
+          Contexte
+        </summary>
+
+        <div class="section-content">
+
+          <p>
+            Ce projet est le résultat d'un travail de maîtrise en informatique
+            à l'Université de Montréal, portant sur la visualisation de
+            l'inférence de type étape par étape pour Haskell.
+          </p>
+
+          <p>
+            Le mémoire correspondant est disponible sur la page web de
+            l'université :
+            <a
+              href="https://umontreal.scholaris.ca/collections/d90802a5-d8a0-45fc-9516-c5975b3ca1bc/search"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              papyrus
+            </a>.
+          </p>
+
+          <p>
+            Le repository du projet est ici :
+            <a
+              href="https://github.com/LuchinoAllix"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Github
+            </a>.
+          </p>
+
+
+          <blockquote>
+
+            <p>
+              <strong>Résumé du projet :</strong>
+            </p>
+
+            <p>
+              Pour prévenir de certaines erreurs au <em>run-time</em>,
+              les langages statiquement typés vérifient qu'un programme
+              est correctement typé. Pour ce faire, les types des expressions
+              qui composent le programme sont <em>inférés</em>.
+            </p>
+
+            <p>
+              Le fonctionnement de cette inférence n'est pas évident à
+              comprendre pour les débutants. L'outil conçu est un interpréteur
+              Haskell (langage de programmation fonctionnel) qui permet
+              d'avancer étape par étape à travers l'inférence de type,
+              dans le but de mieux expliquer son fonctionnement.
+            </p>
+
+            <p>
+              Le mémoire explique tout le projet, son développement,
+              sa motivation, son évaluation, ...
+            </p>
+
+          </blockquote>
+
+
+          <p>
+            Ce projet est une extension de
+            <a
+              href="https://codeboot.org/4.0.0/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              codeBoot
+            </a>,
+            un interpréteur Python conçu à l'Université de Montréal,
+            utilisé dans l'enseignement.
+          </p>
+
+          <p>
+            Vu que codeBoot n'est pas open source, seulement le code de
+            l'interpréteur qui a été ajouté est disponible sur le repository
+            du projet.
+          </p>
+
+        </div>
+
+      </details>
+
+
+      <!-- ===================================================
+           CLOSE
+           =================================================== -->
+
+      <div id="cb-info-actions">
+
+        <button
+          id="cb-info-close"
+          type="button"
+        >
+          Fermer
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =======================================================
+       CODEBOOT
+       ======================================================= -->
+
+  <div id="cb-body"></div>
+
+  <div class="cb-vm"></div>
+
+
+  <!-- =======================================================
+       JAVASCRIPT
+       ======================================================= -->
+
+  <script>
+    (function () {
+
+      "use strict";
+
+      const btn = document.getElementById("cb-info-btn");
+      const overlay = document.getElementById("cb-info-overlay");
+      const closeBtn = document.getElementById("cb-info-close");
+      const popup = document.getElementById("cb-info-popup");
+
+
+      /* -------------------------------------------------------
+         OPEN / CLOSE POPUP
+         ------------------------------------------------------- */
+
+      function openPopup() {
+        overlay.classList.add("open");
+        btn.setAttribute("aria-expanded", "true");
+      }
+
+      function closePopup() {
+        overlay.classList.remove("open");
+        btn.setAttribute("aria-expanded", "false");
+
+        btn.focus();
+      }
+
+
+      btn.addEventListener("click", openPopup);
+
+      closeBtn.addEventListener("click", closePopup);
+
+
+      /* -------------------------------------------------------
+         CLICK OUTSIDE POPUP
+         ------------------------------------------------------- */
+
+      overlay.addEventListener("click", function (event) {
+
+        if (event.target === overlay) {
+          closePopup();
+        }
+
+      });
+
+
+      /* -------------------------------------------------------
+         ESCAPE KEY
+         ------------------------------------------------------- */
+
+      document.addEventListener("keydown", function (event) {
+
+        if (
+          event.key === "Escape" &&
+          overlay.classList.contains("open")
+        ) {
+          closePopup();
+        }
+
+      });
+
+
+      /* -------------------------------------------------------
+         COPY CODE BUTTONS
+         ------------------------------------------------------- */
+
+      const copyButtons =
+        document.querySelectorAll(".copy-btn");
+
+
+      copyButtons.forEach(function (button) {
+
+        button.addEventListener("click", async function () {
+
+          const container = button.closest(".code-container");
+          const code = container.querySelector("code");
+
+          try {
+
+            await navigator.clipboard.writeText(code.textContent);
+
+            const originalText = button.textContent;
+
+            button.textContent = "Copié !";
+            button.classList.add("copied");
+
+            setTimeout(function () {
+
+              button.textContent = originalText;
+              button.classList.remove("copied");
+
+            }, 1500);
+
+          } catch (error) {
+
+            /*
+             * Fallback pour les navigateurs qui ne supportent
+             * pas navigator.clipboard.
+             */
+
+            const textArea = document.createElement("textarea");
+
+            textArea.value = code.textContent;
+
+            textArea.style.position = "fixed";
+            textArea.style.left = "-9999px";
+
+            document.body.appendChild(textArea);
+
+            textArea.select();
+
+            try {
+              document.execCommand("copy");
+
+              button.textContent = "Copié !";
+              button.classList.add("copied");
+
+              setTimeout(function () {
+                button.textContent = "Copier";
+                button.classList.remove("copied");
+              }, 1500);
+
+            } catch (fallbackError) {
+
+              button.textContent = "Erreur";
+
+              setTimeout(function () {
+                button.textContent = "Copier";
+              }, 1500);
+
+            }
+
+            document.body.removeChild(textArea);
+          }
+
+        });
+
+      });
+
+
+      /* -------------------------------------------------------
+         OPEN POPUP AUTOMATICALLY
+         ------------------------------------------------------- */
+
+      openPopup();
+
+    })();
+  </script>
 
 </body>
 
