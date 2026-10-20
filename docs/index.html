@@ -373,12 +373,54 @@
 
 
     /* =========================================================
+       LANGUAGE SWITCH
+       ========================================================= */
+
+    #cb-lang-switch {
+      display: flex;
+      justify-content: flex-end;
+      gap: 6px;
+    }
+
+    #cb-lang-switch .lang-btn {
+      padding: 4px 12px;
+      border: 1px solid #a00789;
+      border-radius: 6px;
+      background: transparent;
+      color: #a00789;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    #cb-lang-switch .lang-btn.active {
+      background: #a00789;
+      color: white;
+    }
+
+    #cb-lang-switch .lang-btn:focus-visible {
+      outline: 3px solid #016bb6;
+      outline-offset: 2px;
+    }
+
+    .lang-content {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .lang-content[hidden] {
+      display: none;
+    }
+
+
+    /* =========================================================
        MOBILE
        ========================================================= */
 
     @media (max-width: 600px) {
       #cb-info-btn {
-        right: 70px;
+        padding: 6px 10px;
+        font-size: 13px;
       }
 
       #cb-info-overlay {
@@ -434,267 +476,450 @@
       id="cb-info-popup"
       role="dialog"
       aria-modal="true"
-      aria-labelledby="cb-info-title"
+      aria-labelledby="cb-info-title-fr"
     >
 
-      <h2 id="cb-info-title">
-        L'inférence de type, étape par étape.
-      </h2>
+      <!-- ===================================================
+           LANGUAGE SWITCH
+           =================================================== -->
 
-      <p>
-        Cet outil est un interpréteur pour une sous-partie du langage
-        Haskell, qui permet de visualiser l'inférence de type étape par étape.
-      </p>
+      <div id="cb-lang-switch">
+        <button type="button" class="lang-btn" data-lang="fr" aria-pressed="true">Français</button>
+        <button type="button" class="lang-btn" data-lang="en" aria-pressed="false">English</button>
+      </div>
 
 
       <!-- ===================================================
-           UTILISATION
+           VERSION FRANÇAISE
            =================================================== -->
 
-      <details open>
+      <div class="lang-content" data-lang="fr" lang="fr">
 
-        <summary>
-          Utilisation
-        </summary>
+        <h2 id="cb-info-title-fr">
+          L'inférence de type, étape par étape.
+        </h2>
 
-        <div class="section-content">
-
-          <p>
-            La <strong>REPL</strong> sert juste à afficher le résultat.
-            Pour utiliser l'interpréteur, il faut créer un nouveau fichier,
-            à l'aide de l'icône dossier, en haut à gauche.
-          </p>
-
-          <p>
-            Les trois boutons en haut à droite servent respectivement à :
-          </p>
-
-          <ul>
-            <li>
-              lancer l'inférence de type étape par étape
-            </li>
-
-            <li>
-              exécuter le code
-              (fait automatiquement à la fin de l'inférence de type)
-            </li>
-
-            <li>
-              arrêter l'inférence ou l'exécution
-            </li>
-          </ul>
-
-          <p>
-            Voici quelques exemples de code qui peuvent être utilisés :
-          </p>
+        <p>
+          Cet outil est un interpréteur pour une sous-partie du langage
+          Haskell, qui permet de visualiser l'inférence de type étape par étape.
+        </p>
 
 
-          <!-- CODE 1 -->
+        <!-- UTILISATION -->
 
-          <div class="code-container">
+        <details open>
 
-            <button
-              class="copy-btn"
-              type="button"
-              aria-label="Copier le code"
-            >
-              Copier
-            </button>
+          <summary>
+            Utilisation
+          </summary>
 
-            <pre><code>main = print "Hello World!"</code></pre>
+          <div class="section-content">
 
-          </div>
+            <p>
+              La <strong>REPL</strong> sert juste à afficher le résultat.
+              Pour utiliser l'interpréteur, il faut créer un nouveau fichier,
+              à l'aide de l'icône dossier, en haut à gauche.
+            </p>
 
+            <p>
+              Les trois boutons en haut à droite servent respectivement à :
+            </p>
 
-          <!-- CODE 2 -->
+            <ul>
+              <li>
+                lancer l'inférence de type étape par étape
+              </li>
 
-          <div class="code-container">
+              <li>
+                exécuter le code
+                (fait automatiquement à la fin de l'inférence de type)
+              </li>
 
-            <button
-              class="copy-btn"
-              type="button"
-              aria-label="Copier le code"
-            >
-              Copier
-            </button>
+              <li>
+                arrêter l'inférence ou l'exécution
+              </li>
+            </ul>
 
-            <pre><code>len []    = 0
+            <p>
+              Voici quelques exemples de code qui peuvent être utilisés :
+            </p>
+
+            <div class="code-container">
+              <button class="copy-btn" type="button" data-label="Copier" data-done="Copié !" aria-label="Copier le code">Copier</button>
+              <pre><code>main = print "Hello World!"</code></pre>
+            </div>
+
+            <div class="code-container">
+              <button class="copy-btn" type="button" data-label="Copier" data-done="Copié !" aria-label="Copier le code">Copier</button>
+              <pre><code>len []    = 0
 len (_:b) = 1 + (len b)
 
 main = print (len [1,2,3])</code></pre>
+            </div>
 
-          </div>
-
-
-          <!-- CODE 3 -->
-
-          <div class="code-container">
-
-            <button
-              class="copy-btn"
-              type="button"
-              aria-label="Copier le code"
-            >
-              Copier
-            </button>
-
-            <pre><code>myMap f [] = []
+            <div class="code-container">
+              <button class="copy-btn" type="button" data-label="Copier" data-done="Copié !" aria-label="Copier le code">Copier</button>
+              <pre><code>myMap f [] = []
 myMap f (a:b) = (f a) : (myMap f b)
 
 main = print(myMap (\x -> x * x + 1) [3,4,5])</code></pre>
+            </div>
 
           </div>
 
-        </div>
+        </details>
 
-      </details>
+
+        <!-- SPÉCIFICATIONS -->
+
+        <details>
+
+          <summary>
+            Spécifications
+          </summary>
+
+          <div class="section-content">
+
+            <p>
+              Seulement une sous-partie de Haskell est couverte par
+              l'interpréteur. De plus, très peu de primitives ont été
+              implémentées.
+            </p>
+
+            <p>
+              Même s'il serait intéressant d'utiliser cet outil à des fins
+              pédagogiques en classe, c'est avant tout (et pour l'instant)
+              <em>a proof of concept</em>.
+            </p>
+
+            <p>
+              Cette version de Haskell n'implémente pas l'évaluation paresseuse.Résumé simplement, l'interpréteur accepte des programmes Haskell
+              qui n'utilisent pas :
+            </p>
+
+            <ul>
+              <li>les <code>where</code></li>
+              <li>la notation <code>|</code> (guards)</li>
+              <li>les <em>list comprehensions</em></li>
+              <li>des monades autres que <code>print</code></li>
+              <li>les <em>type classes</em></li>
+            </ul>
+
+            <blockquote>
+              <p>
+                <strong>Caveat</strong>
+              </p>
+
+              <p>
+                Il y a des bugs en tout genre à travers l'interpréteur...
+              </p>
+            </blockquote>
+
+          </div>
+
+        </details>
+
+
+        <!-- CONTEXTE -->
+
+        <details>
+
+          <summary>
+            Contexte
+          </summary>
+
+          <div class="section-content">
+
+            <p>
+              Ce projet est le résultat d'un travail de maîtrise en informatique
+              à l'Université de Montréal, portant sur la visualisation de
+              l'inférence de type étape par étape pour Haskell.
+            </p>
+
+            <p>
+              Le mémoire correspondant est disponible sur la page web de
+              l'université :
+              <a
+                href="https://umontreal.scholaris.ca/items/a6f04516-1912-4bd2-80b9-114644ef5cb6"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                papyrus
+              </a>.
+            </p>
+
+            <p>
+              Le repository du projet est ici :
+              <a
+                href="https://github.com/LuchinoAllix"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Github
+              </a>.
+            </p>
+
+            <blockquote>
+
+              <p>
+                <strong>Résumé du projet :</strong>
+              </p>
+
+              <p>
+                Pour prévenir de certaines erreurs au <em>run-time</em>,
+                les langages statiquement typés vérifient qu'un programme
+                est correctement typé. Pour ce faire, les types des expressions
+                qui composent le programme sont <em>inférés</em>.
+              </p>
+
+              <p>
+                Le fonctionnement de cette inférence n'est pas évident à
+                comprendre pour les débutants. L'outil conçu est un interpréteur
+                Haskell (langage de programmation fonctionnel) qui permet
+                d'avancer étape par étape à travers l'inférence de type,
+                dans le but de mieux expliquer son fonctionnement.
+              </p>
+
+              <p>
+                Le mémoire explique tout le projet, son développement,
+                sa motivation, son évaluation, ...
+              </p>
+
+            </blockquote>
+
+            <p>
+              Ce projet est une extension de
+              <a
+                href="https://codeboot.org/4.0.0/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                codeBoot
+              </a>,
+              un interpréteur Python conçu à l'Université de Montréal,
+              utilisé dans l'enseignement.
+            </p>
+
+            <p>
+              Vu que codeBoot n'est pas open source, seulement le code de
+              l'interpréteur qui a été ajouté est disponible sur le repository
+              du projet.
+            </p>
+
+          </div>
+
+        </details>
+
+      </div>
 
 
       <!-- ===================================================
-           SPÉCIFICATIONS
+           ENGLISH VERSION
            =================================================== -->
 
-      <details>
+      <div class="lang-content" data-lang="en" lang="en" hidden>
 
-        <summary>
-          Spécifications
-        </summary>
+        <h2 id="cb-info-title-en">
+          Type inference, step by step.
+        </h2>
 
-        <div class="section-content">
+        <p>
+          This tool is an interpreter for a subset of the Haskell language,
+          which lets you visualize type inference step by step.
+        </p>
 
-          <p>
-            Seulement une sous-partie de Haskell est couverte par
-            l'interpréteur. De plus, très peu de primitives ont été
-            implémentées.
-          </p>
 
-          <p>
-            Même s'il serait intéressant d'utiliser cet outil à des fins
-            pédagogiques en classe, c'est avant tout
-            <em>a proof of concept</em>.
-          </p>
+        <!-- USAGE -->
 
-          <p>
-            Résumé simplement, l'interpréteur accepte des programmes Haskell
-            qui n'utilisent pas :
-          </p>
+        <details open>
 
-          <ul>
-            <li>les <code>where</code></li>
-            <li>la notation <code>|</code> (guards)</li>
-            <li>les <em>list comprehensions</em></li>
-            <li>des monades autres que <code>print</code></li>
-            <li>les <em>type classes</em></li>
-          </ul>
+          <summary>
+            Usage
+          </summary>
 
-          <blockquote>
+          <div class="section-content">
+
             <p>
-              <strong>Caveat</strong>
+              The <strong>REPL</strong> is only used to display the output.
+              To use the interpreter, create a new file with the folder icon
+              in the top left.
             </p>
 
             <p>
-              Il y a des bugs en tout genre à travers l'interpréteur...
+              The three buttons at the top right are used, respectively, to:
             </p>
-          </blockquote>
 
-        </div>
-
-      </details>
-
-
-      <!-- ===================================================
-           CONTEXTE
-           =================================================== -->
-
-      <details>
-
-        <summary>
-          Contexte
-        </summary>
-
-        <div class="section-content">
-
-          <p>
-            Ce projet est le résultat d'un travail de maîtrise en informatique
-            à l'Université de Montréal, portant sur la visualisation de
-            l'inférence de type étape par étape pour Haskell.
-          </p>
-
-          <p>
-            Le mémoire correspondant est disponible sur la page web de
-            l'université :
-            <a
-              href="https://umontreal.scholaris.ca/items/a6f04516-1912-4bd2-80b9-114644ef5cb6"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              papyrus
-            </a>.
-          </p>
-
-          <p>
-            Le repository du projet est ici :
-            <a
-              href="https://github.com/LuchinoAllix"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Github
-            </a>.
-          </p>
-
-
-          <blockquote>
+            <ul>
+              <li>start step-by-step type inference</li>
+              <li>run the code (done automatically at the end of type inference)</li>
+              <li>stop the inference or the execution</li>
+            </ul>
 
             <p>
-              <strong>Résumé du projet :</strong>
+              Here are a few code examples you can use:
+            </p>
+
+            <div class="code-container">
+              <button class="copy-btn" type="button" data-label="Copy" data-done="Copied!" aria-label="Copy the code">Copy</button>
+              <pre><code>main = print "Hello World!"</code></pre>
+            </div>
+
+            <div class="code-container">
+              <button class="copy-btn" type="button" data-label="Copy" data-done="Copied!" aria-label="Copy the code">Copy</button>
+              <pre><code>len []    = 0
+len (_:b) = 1 + (len b)
+
+main = print (len [1,2,3])</code></pre>
+            </div>
+
+            <div class="code-container">
+              <button class="copy-btn" type="button" data-label="Copy" data-done="Copied!" aria-label="Copy the code">Copy</button>
+              <pre><code>myMap f [] = []
+myMap f (a:b) = (f a) : (myMap f b)
+
+main = print(myMap (\x -> x * x + 1) [3,4,5])</code></pre>
+            </div>
+
+          </div>
+
+        </details>
+
+
+        <!-- SPECIFICATIONS -->
+
+        <details>
+
+          <summary>
+            Specifications
+          </summary>
+
+          <div class="section-content">
+
+            <p>
+              Only a subset of Haskell is covered by the interpreter, and very
+              few primitives have been implemented.
             </p>
 
             <p>
-              Pour prévenir de certaines erreurs au <em>run-time</em>,
-              les langages statiquement typés vérifient qu'un programme
-              est correctement typé. Pour ce faire, les types des expressions
-              qui composent le programme sont <em>inférés</em>.
+              Although it would be interesting to use this tool for teaching in
+              class, it is (for the time being) <em>a proof of concept</em>.
             </p>
 
             <p>
-              Le fonctionnement de cette inférence n'est pas évident à
-              comprendre pour les débutants. L'outil conçu est un interpréteur
-              Haskell (langage de programmation fonctionnel) qui permet
-              d'avancer étape par étape à travers l'inférence de type,
-              dans le but de mieux expliquer son fonctionnement.
+              This version of haskell does not use lazy evaluation. In short, the interpreter accepts Haskell programs that do not use:
+            </p>
+
+            <ul>
+              <li><code>where</code> clauses</li>
+              <li>the <code>|</code> notation (guards)</li>
+              <li><em>list comprehensions</em></li>
+              <li>monads other than <code>print</code></li>
+              <li><em>type classes</em></li>
+            </ul>
+
+            <blockquote>
+              <p>
+                <strong>Caveat</strong>
+              </p>
+
+              <p>
+                There are all sorts of bugs throughout the interpreter...
+              </p>
+            </blockquote>
+
+          </div>
+
+        </details>
+
+
+        <!-- BACKGROUND -->
+
+        <details>
+
+          <summary>
+            Background
+          </summary>
+
+          <div class="section-content">
+
+            <p>
+              This project is the result of a master's thesis in computer
+              science at the Université de Montréal, on visualizing
+              step-by-step type inference for Haskell.
             </p>
 
             <p>
-              Le mémoire explique tout le projet, son développement,
-              sa motivation, son évaluation, ...
+              The thesis is available on the university's website:
+              <a
+                href="https://umontreal.scholaris.ca/items/a6f04516-1912-4bd2-80b9-114644ef5cb6"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                papyrus
+              </a>.
             </p>
 
-          </blockquote>
+            <p>
+              The project repository is here:
+              <a
+                href="https://github.com/LuchinoAllix"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Github
+              </a>.
+            </p>
 
+            <blockquote>
 
-          <p>
-            Ce projet est une extension de
-            <a
-              href="https://codeboot.org/4.0.0/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              codeBoot
-            </a>,
-            un interpréteur Python conçu à l'Université de Montréal,
-            utilisé dans l'enseignement.
-          </p>
+              <p>
+                <strong>Project summary:</strong>
+              </p>
 
-          <p>
-            Vu que codeBoot n'est pas open source, seulement le code de
-            l'interpréteur qui a été ajouté est disponible sur le repository
-            du projet.
-          </p>
+              <p>
+                To prevent certain <em>run-time</em> errors, statically typed
+                languages check that a program is well typed. To do so, the
+                types of the expressions that make up the program are
+                <em>inferred</em>.
+              </p>
 
-        </div>
+              <p>
+                How this inference works is not obvious to beginners. This tool
+                is a Haskell interpreter (a functional programming language)
+                that lets you step through type inference in order to better
+                understand how it works.
+              </p>
 
-      </details>
+              <p>
+                The thesis covers the whole project: its development,
+                motivation, evaluation, ...
+              </p>
+
+            </blockquote>
+
+            <p>
+              This project is an extension of
+              <a
+                href="https://codeboot.org/4.0.0/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                codeBoot
+              </a>,
+              a Python interpreter designed at the Université de Montréal
+              and used in teaching.
+            </p>
+
+            <p>
+              Since codeBoot is not open source, only the interpreter code that
+              was added is available in the project repository.
+            </p>
+
+          </div>
+
+        </details>
+
+      </div>
 
 
       <!-- ===================================================
@@ -796,32 +1021,31 @@ main = print(myMap (\x -> x * x + 1) [3,4,5])</code></pre>
          COPY CODE BUTTONS
          ------------------------------------------------------- */
 
-      const copyButtons =
-        document.querySelectorAll(".copy-btn");
-
-
-      copyButtons.forEach(function (button) {
+      document.querySelectorAll(".copy-btn").forEach(function (button) {
 
         button.addEventListener("click", async function () {
 
-          const container = button.closest(".code-container");
-          const code = container.querySelector("code");
+          const code = button.closest(".code-container").querySelector("code");
+          const label = button.dataset.label || "Copier";
+          const done = button.dataset.done || "Copié !";
+
+          function flash(text, ok) {
+            button.textContent = text;
+
+            if (ok) {
+              button.classList.add("copied");
+            }
+
+            setTimeout(function () {
+              button.textContent = label;
+              button.classList.remove("copied");
+            }, 1500);
+          }
 
           try {
 
             await navigator.clipboard.writeText(code.textContent);
-
-            const originalText = button.textContent;
-
-            button.textContent = "Copié !";
-            button.classList.add("copied");
-
-            setTimeout(function () {
-
-              button.textContent = originalText;
-              button.classList.remove("copied");
-
-            }, 1500);
+            flash(done, true);
 
           } catch (error) {
 
@@ -830,44 +1054,107 @@ main = print(myMap (\x -> x * x + 1) [3,4,5])</code></pre>
              * pas navigator.clipboard.
              */
 
-            const textArea = document.createElement("textarea");
+            const ta = document.createElement("textarea");
 
-            textArea.value = code.textContent;
+            ta.value = code.textContent;
+            ta.style.position = "fixed";
+            ta.style.left = "-9999px";
 
-            textArea.style.position = "fixed";
-            textArea.style.left = "-9999px";
-
-            document.body.appendChild(textArea);
-
-            textArea.select();
+            document.body.appendChild(ta);
+            ta.select();
 
             try {
               document.execCommand("copy");
-
-              button.textContent = "Copié !";
-              button.classList.add("copied");
-
-              setTimeout(function () {
-                button.textContent = "Copier";
-                button.classList.remove("copied");
-              }, 1500);
-
+              flash(done, true);
             } catch (fallbackError) {
-
-              button.textContent = "Erreur";
-
-              setTimeout(function () {
-                button.textContent = "Copier";
-              }, 1500);
-
+              flash("Error", false);
             }
 
-            document.body.removeChild(textArea);
+            document.body.removeChild(ta);
           }
 
         });
 
       });
+
+
+      /* -------------------------------------------------------
+         KEEP INFO BUTTON NEXT TO THE SETTINGS COG
+         ------------------------------------------------------- */
+
+      function findCog() {
+        const candidates = document.querySelectorAll(
+          '[class*="cog"], [class*="gear"], [class*="settings"], [id*="settings"], ' +
+          '[title*="ettings"], [title*="aram"], [aria-label*="ettings"], [aria-label*="aram"]'
+        );
+
+        for (const el of candidates) {
+          if (el === btn || btn.contains(el) || popup.contains(el)) continue;
+          const r = el.getBoundingClientRect();
+          if (r.width > 0 && r.height > 0 && r.top < 80) return el;
+        }
+        return null;
+      }
+
+      function placeBtn() {
+        const cog = findCog();
+        if (!cog) return false;
+
+        const r = cog.getBoundingClientRect();
+        btn.style.left = (r.right + 6) + "px";
+        btn.style.top = (r.top + (r.height - btn.offsetHeight) / 2) + "px";
+        return true;
+      }
+
+      // codeBoot builds its UI after load, so retry for a few seconds
+      let tries = 0;
+      const timer = setInterval(function () {
+        placeBtn();
+        if (++tries > 10) clearInterval(timer);
+      }, 500);
+
+      window.addEventListener("resize", placeBtn);
+      window.addEventListener("orientationchange", placeBtn);
+      window.addEventListener("load", placeBtn);
+
+
+      /* -------------------------------------------------------
+         LANGUAGE SWITCH
+         ------------------------------------------------------- */
+
+      const langBtns = document.querySelectorAll(".lang-btn");
+      const langBlocks = document.querySelectorAll(".lang-content");
+
+      function setLang(lang) {
+        langBlocks.forEach(function (block) {
+          block.hidden = block.dataset.lang !== lang;
+        });
+
+        langBtns.forEach(function (b) {
+          const active = b.dataset.lang === lang;
+          b.classList.toggle("active", active);
+          b.setAttribute("aria-pressed", active);
+        });
+
+        popup.setAttribute("aria-labelledby", "cb-info-title-" + lang);
+        closeBtn.textContent = lang === "fr" ? "Fermer" : "Close";
+        btn.setAttribute(
+          "aria-label",
+          lang === "fr" ? "Afficher les informations" : "Show information"
+        );
+
+        try { localStorage.setItem("cb-info-lang", lang); } catch (e) {}
+      }
+
+      langBtns.forEach(function (b) {
+        b.addEventListener("click", function () {
+          setLang(b.dataset.lang);
+        });
+      });
+
+      let savedLang = "fr";
+      try { savedLang = localStorage.getItem("cb-info-lang") || "fr"; } catch (e) {}
+      setLang(savedLang === "en" ? "en" : "fr");
 
 
       /* -------------------------------------------------------
